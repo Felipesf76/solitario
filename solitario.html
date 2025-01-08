@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Solitario</title>
   <link rel="stylesheet" href="css/solitario.css">
+  <script src="js/solitario.js"></script>
 </head>
 <body>
   <div class="container">
@@ -17,14 +18,14 @@
     </div>
     <section class="game">
       <div class="top-part">
-        <div class="table"></div>
-        <div class="left-cards"></div>
+        <div id="board" class="board"></div>
+        <div id="stock" class="left-cards"></div>
       </div>
       <div class="bottom-part">
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
+        <div id="foundation1" class="card"></div>
+        <div id="foundation2" class="card"></div>
+        <div id="foundation3" class="card"></div>
+        <div id="foundation4" class="card"></div>
       </div>
     </section>
   </div>

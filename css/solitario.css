@@ -8,7 +8,8 @@
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: start;
   align-items: center;
 }
 
@@ -18,12 +19,33 @@
   align-items: center;
   justify-content: space-around;
   width: 50%;
-  height: 15%;
-  margin-top: 30px;
+  height: 13%;
+  margin-top: 50px;
+  margin-bottom: 20px;
 }
 
 .information {
   display: flex;
   justify-content: space-between;
   width: 80%;
+}
+
+
+.game {
+  width: 70%;
+  height: auto;
+}
+
+.board {
+  border: solid 1px black;
+  width: 600px;
+  height: 500px;
+  background-color: greenyellow;
+  position: absolute;
+}
+
+.board-card {
+  position: relative;
+  width: 60px;
+  height: 100px;
 }
