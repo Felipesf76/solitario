@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
         initialDeck.push(card);
       }
     }
+
+    boardElement.appendChild(initialDeck[0]);
     //TODO: shuffle deck
 
     //TODO: Put cards in board game
@@ -37,4 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
     //TODO: Time counter
 
   }
+
+  startGame();
 })
