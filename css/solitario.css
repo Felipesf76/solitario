@@ -4,6 +4,7 @@
   box-sizing: border-box;
 }
 h1 {
+  font-size: xx-large;
   color: orange;
 }
 
@@ -26,6 +27,13 @@ h1 {
   margin: 10px 0;
   font-family:Arial, Helvetica, sans-serif;
   font-weight: 'semi-bold';
+}
+
+.title-flex {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 70%;
 }
 
 .information {
