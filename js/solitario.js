@@ -21,6 +21,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function startGame() {
     // Creation of deck structure
+    initialDeck = createDeck(values, suits)
+
+    initialDeck = shuffleDeck(initialDeck)
+
+    initialGameBoard(initialDeck)
+    // DROP CARD STROKE
+    stockElement.ondragenter = function(e) { e.preventDefault(); }
+    stockElement.ondragover = function(e) { e.preventDefault(); }
+    stockElement.ondragleave = function(e) { e.preventDefault(); }
+    stockElement.ondrop = dropCard
+
+    // DROP CARD foundation 1
+    foundation1Element.ondragenter = function(e) { e.preventDefault(); }
+    foundation1Element.ondragover = function(e) { e.preventDefault(); }
+    foundation1Element.ondragleave = function(e) { e.preventDefault(); }
+    foundation1Element.ondrop = dropCardFoundation(foundation1Element, cardsFoundation1)
+
+    // DROP CARD foundation 2
+    foundation2Element.ondragenter = function(e) { e.preventDefault(); }
+    foundation2Element.ondragover = function(e) { e.preventDefault(); }
+    foundation2Element.ondragleave = function(e) { e.preventDefault(); }
+    foundation2Element.ondrop = dropCardFoundation(foundation2Element, cardsFoundation2)
+    // DROP CARD foundation 3
+    foundation3Element.ondragenter = function(e) { e.preventDefault(); }
+    foundation3Element.ondragover = function(e) { e.preventDefault(); }
+    foundation3Element.ondragleave = function(e) { e.preventDefault(); }
+    foundation3Element.ondrop = dropCardFoundation(foundation3Element, cardsFoundation3)
+    // DROP CARD foundation 4
+    foundation4Element.ondragenter = function(e) { e.preventDefault(); }
+    foundation4Element.ondragover = function(e) { e.preventDefault(); }
+    foundation4Element.ondragleave = function(e) { e.preventDefault(); }
+    foundation4Element.ondrop = dropCardFoundation(foundation4Element, cardsFoundation4)
+
+  }
+  startGame()
+
+  function createDeck(values, suits) {
     for (i = 0; i < values.length; i++) {
       for (j = 0; j < suits.length; j++) {
         let card = document.createElement('img');
@@ -37,20 +74,8 @@ document.addEventListener('DOMContentLoaded', function() {
         initialDeck.push(card);
       }
     }
-
-    //TODO: shuffle deck
-    initialDeck = shuffleDeck(initialDeck)
-
-    //TODO: Put cards in board game
-    initialGameBoard(initialDeck)
-
-    //TODO: Logic for every foundation
-
-    //TODO: Time counter
-
-
+    return initialDeck
   }
-  startGame()
 
   function shuffleDeck(initialDeck) {
     for (i = initialDeck.length - 1; i > 0; i--) {
@@ -73,31 +98,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     draggableCard(initialDeck)
 
-    stockElement.ondragenter = function(e) { e.preventDefault(); }
-    stockElement.ondragover = function(e) { e.preventDefault(); }
-    stockElement.ondragleave = function(e) { e.preventDefault(); }
-    stockElement.ondrop = dropCard
+    // stockElement.ondragenter = function(e) { e.preventDefault(); }
+    // stockElement.ondragover = function(e) { e.preventDefault(); }
+    // stockElement.ondragleave = function(e) { e.preventDefault(); }
+    // stockElement.ondrop = dropCard
 
-    foundation1Element.ondragenter = function(e) { e.preventDefault(); }
-    foundation1Element.ondragover = function(e) { e.preventDefault(); }
-    foundation1Element.ondragleave = function(e) { e.preventDefault(); }
-    foundation1Element.ondrop = dropCardFoundation
-
+    // foundation1Element.ondragenter = function(e) { e.preventDefault(); }
+    // foundation1Element.ondragover = function(e) { e.preventDefault(); }
+    // foundation1Element.ondragleave = function(e) { e.preventDefault(); }
+    // foundation1Element.ondrop = dropCardFoundation
   }
 
-  function dropCard(event) {
-    event.preventDefault();
-    let cardId = event.dataTransfer.getData("text/plain/id")
-    let suit = event.dataTransfer.getData("text/plain/suit")
-    let value = event.dataTransfer.getData("text/plain/value")
-    let card = document.getElementById(cardId)
-    card.style.top = "30px"
-    card.style.left = "30px"
-    stockElement.appendChild(card)
-    cardsStock.push(card)
-    initialDeck.pop()
-    draggableCard(initialDeck)
-  }
   function draggableCard(cardsArray) {
     for (i = 0; i < cardsArray.length; i++) {
       if (i === cardsArray.length - 1) {
@@ -110,41 +121,67 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  function dropCardFoundation(event) {
+  function dropCard(event) {
     event.preventDefault();
     let cardId = event.dataTransfer.getData("text/plain/id")
     let suit = event.dataTransfer.getData("text/plain/suit")
     let value = event.dataTransfer.getData("text/plain/value")
-    let color = event.dataTransfer.getData("text/plain/color")
-
     let card = document.getElementById(cardId)
-    console.log(cardsFoundation1[cardsFoundation1.length])
+    card.style.top = "30px"
+    card.style.left = "30px"
+    stockElement.appendChild(card)
+    cardsStock.push(card)
+    console.log(stockElement);
 
-    if (cardsFoundation1.length == 0 && value == lastCard ) {
-      card.style.top = "30px"
-      card.style.left = "30px"
-      foundation1Element.appendChild(document.getElementById(cardId))
-      cardsFoundation1.push(card)
-      initialDeck.pop()
-      draggableCard(initialDeck)
-    }else if(cardsFoundation1.length > 0 && value == lastCard - cardsFoundation1.length && color ){
-      card.style.top = "30px"
-      card.style.left = "30px"
-      foundation1Element.appendChild(document.getElementById(cardId))
-      cardsFoundation1.push(card)
-      initialDeck.pop()
-      draggableCard(initialDeck)
+    setCounter(stockElement.firstElementChild ,cardsStock.length)
+    initialDeck.pop()
+    draggableCard(initialDeck)
+  }
+
+  function dropCardFoundation(element, cardsArray) {
+    return function(event) {
+      event.preventDefault();
+
+      let cardId = event.dataTransfer.getData("text/plain/id")
+      let suit = event.dataTransfer.getData("text/plain/suit")
+      let value = event.dataTransfer.getData("text/plain/value")
+      let color = event.dataTransfer.getData("text/plain/color")
+
+      let card = document.getElementById(cardId)
+
+      if (cardsArray.length == 0 && value == lastCard ) {
+        card.style.top = "30px"
+        card.style.left = "30px"
+        element.appendChild(card)
+        cardsArray.push(card)
+        setCounter(element.firstElementChild, cardsArray.length)
+        initialDeck.pop()
+        draggableCard(initialDeck)
+      }else if(cardsArray.length > 0 && value == lastCard - cardsArray.length && color ){
+        card.style.top = "30px"
+        card.style.left = "30px"
+        element.appendChild(card)
+        cardsArray.push(card)
+        setCounter(element.firstElementChild, cardsArray.length)
+        initialDeck.pop()
+        decrementCounter(element.firstElementChild, cardsArray.length)
+        draggableCard(initialDeck)
+      }
     }
   }
 
 
   function in_movement(event) {
-    console.log(event)
-
     event.dataTransfer.setData( "text/plain/suit", event.target.dataset["suit"] );
     event.dataTransfer.setData( "text/plain/id", event.target.id );
     event.dataTransfer.setData( "text/plain/value", event.target.dataset["value"] );
     event.dataTransfer.setData( "text/plain/color", event.target.dataset["color"] );
+  }
+
+  function setCounter(element, count) {
+    element.textContent = count
+  }
+  function decrementCounter(counter) {
 
   }
 
