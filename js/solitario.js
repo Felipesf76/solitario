@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const foundation2Element = document.getElementById('foundation2')
   const foundation3Element = document.getElementById('foundation3')
   const foundation4Element = document.getElementById('foundation4')
+  const movementsElement = document.getElementById('movements')
 
   const cardsFoundation1 = []
   const cardsFoundation2 = []
@@ -26,6 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initialDeck = shuffleDeck(initialDeck)
 
     initialGameBoard(initialDeck)
+
+    starttime()
     // DROP CARD STROKE
     stockElement.ondragenter = function(e) { e.preventDefault(); }
     stockElement.ondragover = function(e) { e.preventDefault(); }
@@ -134,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log(stockElement);
 
     setCounter(stockElement.firstElementChild ,cardsStock.length)
+    setCounter(document.getElementById("movements") ,cardsStock.length)
     initialDeck.pop()
     draggableCard(initialDeck)
   }
@@ -146,8 +150,10 @@ document.addEventListener('DOMContentLoaded', function() {
       let suit = event.dataTransfer.getData("text/plain/suit")
       let value = event.dataTransfer.getData("text/plain/value")
       let color = event.dataTransfer.getData("text/plain/color")
+      
 
       let card = document.getElementById(cardId)
+      console.log(lastCard);
 
       if (cardsArray.length == 0 && value == lastCard ) {
         card.style.top = "30px"
@@ -157,6 +163,8 @@ document.addEventListener('DOMContentLoaded', function() {
         setCounter(element.firstElementChild, cardsArray.length)
         initialDeck.pop()
         draggableCard(initialDeck)
+        cardsStock.push(card)
+        setCounter(document.getElementById("movements") ,cardsStock.length)
       }else if(cardsArray.length > 0 && value == lastCard - cardsArray.length && color ){
         card.style.top = "30px"
         card.style.left = "30px"
@@ -166,6 +174,8 @@ document.addEventListener('DOMContentLoaded', function() {
         initialDeck.pop()
         decrementCounter(element.firstElementChild, cardsArray.length)
         draggableCard(initialDeck)
+        cardsStock.push(card)
+        setCounter(document.getElementById("movements") ,cardsStock.length)
       }
     }
   }
@@ -183,6 +193,27 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   function decrementCounter(counter) {
 
+  }
+
+  function starttime(){
+
+    seconds = 0;
+    timer = '';
+    if (timer) clearInterval(timer);
+      let hms = function (){
+        let sec = Math.trunc( seconds % 60 );
+        let min = Math.trunc( (seconds % 3600) / 60 );
+        let hou = Math.trunc( (seconds % 86400) / 3600 );
+        let time = ( (hou<10)? "0"+hou : ""+hou ) 
+              + ":" + ( (min<10)? "0"+min : ""+min )  
+              + ":" + ( (sec<10)? "0"+sec : ""+sec );
+        setCounter(document.getElementById("time"), time)
+              seconds++;
+      }
+    
+      hms(); // Primera visualización 00:00:00
+    timer = setInterval(hms, 1000);
+        
   }
 
 })
