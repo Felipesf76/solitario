@@ -216,4 +216,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
   }
 
+  function reboot() {
+    location.reload();
+  }
+
+  window.onload = function() {
+    document.getElementById('reboot').addEventListener('click', reboot);
+  }
+
+
 })
