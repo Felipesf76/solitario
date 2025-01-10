@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   const suits = ['cir', 'cua', 'hex', 'viu']
-  const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+  // const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+  const values = ['1', '2', '3', '4']
   let initialDeck = []
+  const lastCard = values.length
 
   const boardElement = document.getElementById('board')
   const stockElement = document.getElementById('stock')
@@ -17,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const cardsFoundation4 = []
   const cardsStock = []
 
-
   function startGame() {
     // Creation of deck structure
     for (i = 0; i < values.length; i++) {
@@ -25,6 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
         let card = document.createElement('img');
         card.src = `../img/baraja/${values[i]}-${suits[j]}.png`;
         card.id = `${values[i]}-${suits[j]}`
+        if (suits[j] === 'cua' || suits[j] === 'viu') {
+          card.setAttribute('data-color', 'red')
+        }else {
+          card.setAttribute('data-color', 'black')
+        }
         card.setAttribute('data-suit', suits[j]);
         card.setAttribute('data-value', values[i])
         card.classList.add('board-card');
@@ -42,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //TODO: Time counter
 
-    // INPROGRESS
 
   }
   startGame()
@@ -62,11 +67,11 @@ document.addEventListener('DOMContentLoaded', function() {
     for (i = 0; i < initialDeck.length; i++) {
       initialDeck[i].style.top = `${count}px`
       initialDeck[i].style.left = `${count}px`
-      initialDeck[i].draggable = true
       initialDeck[i].ondragstart = in_movement
       boardElement.appendChild(initialDeck[i])
       count += 6
     }
+    draggableCard(initialDeck)
 
     stockElement.ondragenter = function(e) { e.preventDefault(); }
     stockElement.ondragover = function(e) { e.preventDefault(); }
@@ -88,32 +93,58 @@ document.addEventListener('DOMContentLoaded', function() {
     let card = document.getElementById(cardId)
     card.style.top = "30px"
     card.style.left = "30px"
-    stockElement.appendChild(document.getElementById(cardId))
+    stockElement.appendChild(card)
     cardsStock.push(card)
     initialDeck.pop()
+    draggableCard(initialDeck)
+  }
+  function draggableCard(cardsArray) {
+    for (i = 0; i < cardsArray.length; i++) {
+      if (i === cardsArray.length - 1) {
+        cardsArray[i].draggable = true
+        cardsArray[i].ondragstart = in_movement
+      }else {
+        cardsArray[i].draggable = false
+        cardsArray[i].ondragstart = null
+      }
+    }
   }
 
   function dropCardFoundation(event) {
     event.preventDefault();
-    console.log(event.target)
     let cardId = event.dataTransfer.getData("text/plain/id")
     let suit = event.dataTransfer.getData("text/plain/suit")
     let value = event.dataTransfer.getData("text/plain/value")
+    let color = event.dataTransfer.getData("text/plain/color")
+
     let card = document.getElementById(cardId)
-    if (12 == value) {
+    console.log(cardsFoundation1[cardsFoundation1.length])
+
+    if (cardsFoundation1.length == 0 && value == lastCard ) {
       card.style.top = "30px"
       card.style.left = "30px"
       foundation1Element.appendChild(document.getElementById(cardId))
-      foundation1Element.push(card)
+      cardsFoundation1.push(card)
       initialDeck.pop()
+      draggableCard(initialDeck)
+    }else if(cardsFoundation1.length > 0 && value == lastCard - cardsFoundation1.length && color ){
+      card.style.top = "30px"
+      card.style.left = "30px"
+      foundation1Element.appendChild(document.getElementById(cardId))
+      cardsFoundation1.push(card)
+      initialDeck.pop()
+      draggableCard(initialDeck)
     }
   }
 
 
   function in_movement(event) {
+    console.log(event)
+
     event.dataTransfer.setData( "text/plain/suit", event.target.dataset["suit"] );
     event.dataTransfer.setData( "text/plain/id", event.target.id );
     event.dataTransfer.setData( "text/plain/value", event.target.dataset["value"] );
+    event.dataTransfer.setData( "text/plain/color", event.target.dataset["color"] );
 
   }
 
