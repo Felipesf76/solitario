@@ -2,9 +2,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const suits = ['cir', 'cua', 'hex', 'viu']
   // const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
-  const values = ['1', '2', '3', '4']
-  let initialDeck = []
-  const lastCard = values.length
+  const values = [1, 2, 3, 4]
+
+  // Convert strings to numbers and find the max
+  function getGreatestNumber(values) {
+    return Math.max(...values.map(Number));
+  }
+  const greatestNumber = getGreatestNumber(values)
+
 
   const boardElement = document.getElementById('board')
   const stockElement = document.getElementById('stock')
@@ -14,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const foundation4Element = document.getElementById('foundation4')
   const movementsElement = document.getElementById('movements')
 
+  let initialDeck = []
   const cardsFoundation1 = []
   const cardsFoundation2 = []
   const cardsFoundation3 = []
@@ -27,6 +33,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initialDeck = shuffleDeck(initialDeck)
 
     initialGameBoard(initialDeck)
+
+    //TODO: Move cards from stock to board
 
     starttime()
     // DROP CARD STROKE
@@ -99,17 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {
       boardElement.appendChild(initialDeck[i])
       count += 6
     }
+    setCounter(boardElement.firstElementChild, initialDeck.length)
     draggableCard(initialDeck)
-
-    // stockElement.ondragenter = function(e) { e.preventDefault(); }
-    // stockElement.ondragover = function(e) { e.preventDefault(); }
-    // stockElement.ondragleave = function(e) { e.preventDefault(); }
-    // stockElement.ondrop = dropCard
-
-    // foundation1Element.ondragenter = function(e) { e.preventDefault(); }
-    // foundation1Element.ondragover = function(e) { e.preventDefault(); }
-    // foundation1Element.ondragleave = function(e) { e.preventDefault(); }
-    // foundation1Element.ondrop = dropCardFoundation
   }
 
   function draggableCard(cardsArray) {
@@ -129,16 +128,16 @@ document.addEventListener('DOMContentLoaded', function() {
     let cardId = event.dataTransfer.getData("text/plain/id")
     let suit = event.dataTransfer.getData("text/plain/suit")
     let value = event.dataTransfer.getData("text/plain/value")
+    let elementId = event.dataTransfer.getData("text/plain/elementId")
     let card = document.getElementById(cardId)
     card.style.top = "30px"
     card.style.left = "30px"
     stockElement.appendChild(card)
     cardsStock.push(card)
-    console.log(stockElement);
 
     setCounter(stockElement.firstElementChild ,cardsStock.length)
     setCounter(document.getElementById("movements") ,cardsStock.length)
-    initialDeck.pop()
+    decrementCounter(elementId)
     draggableCard(initialDeck)
   }
 
@@ -150,32 +149,36 @@ document.addEventListener('DOMContentLoaded', function() {
       let suit = event.dataTransfer.getData("text/plain/suit")
       let value = event.dataTransfer.getData("text/plain/value")
       let color = event.dataTransfer.getData("text/plain/color")
-      
-
+      let elementId = event.dataTransfer.getData("text/plain/elementId")
       let card = document.getElementById(cardId)
-      console.log(lastCard);
 
-      if (cardsArray.length == 0 && value == lastCard ) {
+      if (cardsArray.length == 0 && value == greatestNumber ) {
         card.style.top = "30px"
         card.style.left = "30px"
         element.appendChild(card)
         cardsArray.push(card)
+        card.draggable = false
         setCounter(element.firstElementChild, cardsArray.length)
-        initialDeck.pop()
+        decrementCounter(elementId)
         draggableCard(initialDeck)
+        incrementCounter(element.firstElementChild, cardsArray.length)
         cardsStock.push(card)
         setCounter(document.getElementById("movements") ,cardsStock.length)
-      }else if(cardsArray.length > 0 && value == lastCard - cardsArray.length && color ){
-        card.style.top = "30px"
-        card.style.left = "30px"
-        element.appendChild(card)
-        cardsArray.push(card)
-        setCounter(element.firstElementChild, cardsArray.length)
-        initialDeck.pop()
-        decrementCounter(element.firstElementChild, cardsArray.length)
-        draggableCard(initialDeck)
-        cardsStock.push(card)
-        setCounter(document.getElementById("movements") ,cardsStock.length)
+      }else if(cardsArray.length > 0 && value == greatestNumber - cardsArray.length ){
+        let colorCardsArray = cardsArray[cardsArray.length-1].getAttribute('data-color')
+
+        if (colorCardsArray != color){
+          card.style.top = "30px"
+          card.style.left = "30px"
+          element.appendChild(card)
+          cardsArray.push(card)
+          card.draggable = false
+          setCounter(element.firstElementChild, cardsArray.length)
+          decrementCounter(elementId)
+          draggableCard(initialDeck)
+          cardsStock.push(card)
+          setCounter(document.getElementById("movements") ,cardsStock.length)
+        }
       }
     }
   }
@@ -186,13 +189,20 @@ document.addEventListener('DOMContentLoaded', function() {
     event.dataTransfer.setData( "text/plain/id", event.target.id );
     event.dataTransfer.setData( "text/plain/value", event.target.dataset["value"] );
     event.dataTransfer.setData( "text/plain/color", event.target.dataset["color"] );
+    event.dataTransfer.setData( "text/plain/elementId", event.target.parentElement.id );
   }
 
   function setCounter(element, count) {
     element.textContent = count
   }
-  function decrementCounter(counter) {
-
+  function decrementCounter(element) {
+    if (element == 'board') {
+      initialDeck.pop()
+      setCounter(document.getElementById("counter_board"), initialDeck.length)
+    }else {
+      cardsStock.pop()
+      setCounter(document.getElementById("counter_stock"), cardsStock.length)
+    }
   }
 
   function starttime(){
@@ -204,16 +214,16 @@ document.addEventListener('DOMContentLoaded', function() {
         let sec = Math.trunc( seconds % 60 );
         let min = Math.trunc( (seconds % 3600) / 60 );
         let hou = Math.trunc( (seconds % 86400) / 3600 );
-        let time = ( (hou<10)? "0"+hou : ""+hou ) 
-              + ":" + ( (min<10)? "0"+min : ""+min )  
+        let time = ( (hou<10)? "0"+hou : ""+hou )
+              + ":" + ( (min<10)? "0"+min : ""+min )
               + ":" + ( (sec<10)? "0"+sec : ""+sec );
         setCounter(document.getElementById("time"), time)
               seconds++;
       }
-    
+
       hms(); // Primera visualización 00:00:00
     timer = setInterval(hms, 1000);
-        
+
   }
 
   function reboot() {
