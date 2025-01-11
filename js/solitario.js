@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const suits = ['cir', 'cua', 'hex', 'viu']
   // const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
-  const values = [1,2,3,4]
+  const values = [1]
 
 
   // Convert strings to numbers and find the max
@@ -204,17 +204,28 @@ document.addEventListener('DOMContentLoaded', function() {
     element.textContent = count
   }
 
-
-  function decrementCounter(element) {
-    if (element == 'board') {
-      initialDeck.pop()
       
-      if (initialDeck.length == 0){
-        moveStockToBoard ()
-      }else{
-  
+  function decrementCounter(element) {
+    
+    if (element == 'board') {
+      
+      initialDeck.pop()
       setCounter(document.getElementById("counter_board"), initialDeck.length)
+      
+      if (
+        (initialDeck.length == 0) 
+        && (document.getElementById('counter_foundation1').textContent == greatestNumber)
+        && (document.getElementById('counter_foundation2').textContent == greatestNumber)
+        && (document.getElementById('counter_foundation3').textContent == greatestNumber)
+        && (document.getElementById('counter_foundation4').textContent == greatestNumber)
+        ){
+        
+        console.log("HAZ GANADO")
+        
+      }else if (initialDeck.length == 0) {
+        moveStockToBoard ()    
       }
+
     }else {
       cardsStock.pop()
       setCounter(document.getElementById("counter_stock"), cardsStock.length)
@@ -272,14 +283,18 @@ document.addEventListener('DOMContentLoaded', function() {
     cardsFoundation4 = [];
     cardsStock = [];
 
-    // Reinicia los contadores de cartas, contadores de movimientos y tiempo
+    // Reinicia los contadores de cartas,  
     setCounter(document.getElementById('counter_board'), greatestNumber)
     setCounter(document.getElementById('counter_stock'), 0)
     setCounter(document.getElementById('counter_foundation1'), 0)
     setCounter(document.getElementById('counter_foundation2'), 0)
     setCounter(document.getElementById('counter_foundation3'), 0)
     setCounter(document.getElementById('counter_foundation4'), 0)
+    
+    //reinicia contadores de movimientos
     setCounter(movementsElement, 0);
+
+    //reinicia tiempo
     clearInterval(timer);
     setCounter(document.getElementById("time"), "00:00:00");
 
