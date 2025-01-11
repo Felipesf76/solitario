@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const movementsElement = document.getElementById('movements')
 
   let initialDeck = []
+
+  let movements = 0
   let cardsFoundation1 = []
   let cardsFoundation2 = []
   let cardsFoundation3 = []
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //TODO: Move cards from stock to board
 
     starttime()
-    
+
     // DROP CARD STROKE
     stockElement.ondragenter = function(e) { e.preventDefault(); }
     stockElement.ondragover = function(e) { e.preventDefault(); }
@@ -67,7 +69,15 @@ document.addEventListener('DOMContentLoaded', function() {
     foundation4Element.ondrop = dropCardFoundation(foundation4Element, cardsFoundation4)
 
     document.getElementById('reboot').addEventListener('click', reboot)
-    document.getElementById('shufle').addEventListener('click', initialGameBoard(cardsStock))
+    document.getElementById('shufle').addEventListener('click', () => {
+      if (cardsStock.length === 0 && cardsStock.length > 0) {
+        setCounter(movementsElement , ++movements)
+        initialDeck = cardsStock
+        initialGameBoard(initialDeck)
+        cardsStock = []
+        setCounter(document.getElementById("counter_stock"), cardsStock.length)
+      }
+    })
   }
   startGame()
 
@@ -137,11 +147,10 @@ document.addEventListener('DOMContentLoaded', function() {
     card.style.left = "30px"
     stockElement.appendChild(card)
     cardsStock.push(card)
-
     setCounter(stockElement.firstElementChild ,cardsStock.length)
-    setCounter(document.getElementById("movements") ,cardsStock.length)
     decrementCounter(elementId)
     draggableCard(initialDeck)
+    setCounter(movementsElement , ++movements)
   }
 
   function dropCardFoundation(element, cardsArray) {
@@ -164,9 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setCounter(element.firstElementChild, cardsArray.length)
         decrementCounter(elementId)
         draggableCard(initialDeck)
-        incrementCounter(element.firstElementChild, cardsArray.length)
-        cardsStock.push(card)
-        setCounter(document.getElementById("movements") ,cardsStock.length)
+        setCounter(movementsElement , ++movements)
       }else if(cardsArray.length > 0 && value == greatestNumber - cardsArray.length ){
         let colorCardsArray = cardsArray[cardsArray.length-1].getAttribute('data-color')
 
@@ -179,8 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
           setCounter(element.firstElementChild, cardsArray.length)
           decrementCounter(elementId)
           draggableCard(initialDeck)
-          cardsStock.push(card)
-          setCounter(document.getElementById("movements") ,cardsStock.length)
+          setCounter(movementsElement , ++movements)
         }
       }
     }
@@ -188,11 +194,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   function in_movement(event) {
-    event.dataTransfer.setData( "text/plain/suit", event.target.dataset["suit"] );
-    event.dataTransfer.setData( "text/plain/id", event.target.id );
-    event.dataTransfer.setData( "text/plain/value", event.target.dataset["value"] );
-    event.dataTransfer.setData( "text/plain/color", event.target.dataset["color"] );
-    event.dataTransfer.setData( "text/plain/elementId", event.target.parentElement.id );
+    event.dataTransfer.setData( "text/plain/suit", event.target.dataset["suit"] )
+    event.dataTransfer.setData( "text/plain/id", event.target.id )
+    event.dataTransfer.setData( "text/plain/value", event.target.dataset["value"] )
+    event.dataTransfer.setData( "text/plain/color", event.target.dataset["color"] )
+    event.dataTransfer.setData( "text/plain/elementId", event.target.parentElement.id )
   }
 
   function setCounter(element, count) {
@@ -221,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
               + ":" + ( (min<10)? "0"+min : ""+min )
               + ":" + ( (sec<10)? "0"+sec : ""+sec )
         setCounter(document.getElementById("time"), time)
-              seconds++;
+              seconds++
       }
 
       hms(); // Primera visualización 00:00:00
