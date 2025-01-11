@@ -70,10 +70,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('reboot').addEventListener('click', reboot)
     document.getElementById('shufle').addEventListener('click', () => {
-      initialDeck = cardsStock
-      initialGameBoard(initialDeck)
-      cardsStock = []
-      setCounter(document.getElementById("counter_stock"), cardsStock.length)
+      if (cardsStock.length === 0 && cardsStock.length > 0) {
+        setCounter(movementsElement , ++movements)
+        initialDeck = cardsStock
+        initialGameBoard(initialDeck)
+        cardsStock = []
+        setCounter(document.getElementById("counter_stock"), cardsStock.length)
+      }
     })
   }
   startGame()
