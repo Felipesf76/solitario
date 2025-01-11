@@ -20,11 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const movementsElement = document.getElementById('movements')
 
   let initialDeck = []
-  const cardsFoundation1 = []
-  const cardsFoundation2 = []
-  const cardsFoundation3 = []
-  const cardsFoundation4 = []
-  const cardsStock = []
+
   let movements = 0
   let cardsFoundation1 = []
   let cardsFoundation2 = []
@@ -73,7 +69,12 @@ document.addEventListener('DOMContentLoaded', function() {
     foundation4Element.ondrop = dropCardFoundation(foundation4Element, cardsFoundation4)
 
     document.getElementById('reboot').addEventListener('click', reboot)
-    document.getElementById('shufle').addEventListener('click', initialGameBoard(cardsStock))
+    document.getElementById('shufle').addEventListener('click', () => {
+      initialDeck = cardsStock
+      initialGameBoard(initialDeck)
+      cardsStock = []
+      setCounter(document.getElementById("counter_stock"), cardsStock.length)
+    })
   }
   startGame()
 
@@ -82,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
       for (j = 0; j < suits.length; j++) {
         let card = document.createElement('img');
         card.src = `../img/baraja/${values[i]}-${suits[j]}.png`;
-        console.log(window.location.pathname);
         card.id = `${values[i]}-${suits[j]}`
         if (suits[j] === 'cua' || suits[j] === 'viu') {
           card.setAttribute('data-color', 'red')
@@ -144,12 +144,9 @@ document.addEventListener('DOMContentLoaded', function() {
     card.style.left = "30px"
     stockElement.appendChild(card)
     cardsStock.push(card)
-
     setCounter(stockElement.firstElementChild ,cardsStock.length)
-    //setCounter(document.getElementById("movements") ,cardsStock.length)
     decrementCounter(elementId)
     draggableCard(initialDeck)
-
     setCounter(movementsElement , ++movements)
   }
 
@@ -173,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setCounter(element.firstElementChild, cardsArray.length)
         decrementCounter(elementId)
         draggableCard(initialDeck)
-        incrementCounter(element.firstElementChild, cardsArray)
         setCounter(movementsElement , ++movements)
       }else if(cardsArray.length > 0 && value == greatestNumber - cardsArray.length ){
         let colorCardsArray = cardsArray[cardsArray.length-1].getAttribute('data-color')
@@ -233,10 +229,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
       hms(); // Primera visualización 00:00:00
     timer = setInterval(hms, 1000);
-
-  }
-
-  function incrementCounter(element, cardsArray) {
 
   }
 
