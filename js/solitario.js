@@ -76,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
       for (j = 0; j < suits.length; j++) {
         let card = document.createElement('img');
         card.src = `../img/baraja/${values[i]}-${suits[j]}.png`;
-        console.log(window.location.pathname);
         card.id = `${values[i]}-${suits[j]}`
         if (suits[j] === 'cua' || suits[j] === 'viu') {
           card.setAttribute('data-color', 'red')
@@ -231,13 +230,46 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function reboot() {
-    console.log("REBOOT")
     
-    //set variable
-    initialDeck = []
-  
-    //location.reload()
-    startGame()
+    images = boardElement.querySelectorAll('img');
+    images.forEach(img => img.remove());
+
+    images = stockElement.querySelectorAll('img')
+    images.forEach(img => img.remove());
+
+    images = foundation1Element.querySelectorAll('img')
+    images.forEach(img => img.remove());
+
+    images = foundation2Element.querySelectorAll('img')
+    images.forEach(img => img.remove());
+
+    images = foundation3Element.querySelectorAll('img')
+    images.forEach(img => img.remove());
+
+    images = foundation4Element.querySelectorAll('img')
+    images.forEach(img => img.remove());
+
+    // Reinicia las variables del juego
+    initialDeck = [];
+    cardsFoundation1 = [];
+    cardsFoundation2 = [];
+    cardsFoundation3 = [];
+    cardsFoundation4 = [];
+    cardsStock = [];
+
+    // Reinicia los contadores de cartas, contadores de movimientos y tiempo
+    setCounter(getElementById('counter_board'), greatestNumber)
+    setCounter(getElementById('counter_stock'), 0)
+    setCounter(getElementById('counter_foundation1'), 0)
+    setCounter(getElementById('counter_foundation2'), 0)
+    setCounter(getElementById('counter_foundation3'), 0)
+    setCounter(getElementById('counter_foundation4'), 0)
+    setCounter(movementsElement, 0);
+    clearInterval(timer);
+    setCounter(document.getElementById("time"), "00:00:00");
+
+    // Reinicia el juego
+    startGame();
   }
 
 })
