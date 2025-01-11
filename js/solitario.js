@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const suits = ['cir', 'cua', 'hex', 'viu']
   // const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
-  const values = [1, 2, 3, 4]
+  const values = [1,2,3,4]
+
 
   // Convert strings to numbers and find the max
   function getGreatestNumber(values) {
@@ -69,17 +70,15 @@ document.addEventListener('DOMContentLoaded', function() {
     foundation4Element.ondrop = dropCardFoundation(foundation4Element, cardsFoundation4)
 
     document.getElementById('reboot').addEventListener('click', reboot)
-    document.getElementById('shufle').addEventListener('click', () => {
-      if (cardsStock.length === 0 && cardsStock.length > 0) {
-        setCounter(movementsElement , ++movements)
-        initialDeck = cardsStock
-        initialGameBoard(initialDeck)
-        cardsStock = []
-        setCounter(document.getElementById("counter_stock"), cardsStock.length)
-      }
-    })
+    
   }
   startGame()
+  function moveStockToBoard(){
+      initialDeck = cardsStock
+      initialGameBoard(initialDeck)
+      cardsStock = []
+      setCounter(document.getElementById("counter_stock"), cardsStock.length)
+  }
 
   function createDeck(values, suits) {
     for (i = 0; i < values.length; i++) {
@@ -204,15 +203,25 @@ document.addEventListener('DOMContentLoaded', function() {
   function setCounter(element, count) {
     element.textContent = count
   }
+
+
   function decrementCounter(element) {
     if (element == 'board') {
       initialDeck.pop()
+      
+      if (initialDeck.length == 0){
+        moveStockToBoard ()
+      }else{
+  
       setCounter(document.getElementById("counter_board"), initialDeck.length)
+      }
     }else {
       cardsStock.pop()
       setCounter(document.getElementById("counter_stock"), cardsStock.length)
     }
+
   }
+
 
   function starttime(){
 
@@ -264,12 +273,12 @@ document.addEventListener('DOMContentLoaded', function() {
     cardsStock = [];
 
     // Reinicia los contadores de cartas, contadores de movimientos y tiempo
-    setCounter(getElementById('counter_board'), greatestNumber)
-    setCounter(getElementById('counter_stock'), 0)
-    setCounter(getElementById('counter_foundation1'), 0)
-    setCounter(getElementById('counter_foundation2'), 0)
-    setCounter(getElementById('counter_foundation3'), 0)
-    setCounter(getElementById('counter_foundation4'), 0)
+    setCounter(document.getElementById('counter_board'), greatestNumber)
+    setCounter(document.getElementById('counter_stock'), 0)
+    setCounter(document.getElementById('counter_foundation1'), 0)
+    setCounter(document.getElementById('counter_foundation2'), 0)
+    setCounter(document.getElementById('counter_foundation3'), 0)
+    setCounter(document.getElementById('counter_foundation4'), 0)
     setCounter(movementsElement, 0);
     clearInterval(timer);
     setCounter(document.getElementById("time"), "00:00:00");
