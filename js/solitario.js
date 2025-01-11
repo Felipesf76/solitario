@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const cardsFoundation4 = []
   const cardsStock = []
   let movements = 0
+  let cardsFoundation1 = []
+  let cardsFoundation2 = []
+  let cardsFoundation3 = []
+  let cardsFoundation4 = []
+  let cardsStock = []
 
   function startGame() {
     // Creation of deck structure
@@ -38,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //TODO: Move cards from stock to board
 
     starttime()
+
     // DROP CARD STROKE
     stockElement.ondragenter = function(e) { e.preventDefault(); }
     stockElement.ondragover = function(e) { e.preventDefault(); }
@@ -66,6 +72,8 @@ document.addEventListener('DOMContentLoaded', function() {
     foundation4Element.ondragleave = function(e) { e.preventDefault(); }
     foundation4Element.ondrop = dropCardFoundation(foundation4Element, cardsFoundation4)
 
+    document.getElementById('reboot').addEventListener('click', reboot)
+    document.getElementById('shufle').addEventListener('click', initialGameBoard(cardsStock))
   }
   startGame()
 
@@ -74,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
       for (j = 0; j < suits.length; j++) {
         let card = document.createElement('img');
         card.src = `../img/baraja/${values[i]}-${suits[j]}.png`;
+        console.log(window.location.pathname);
         card.id = `${values[i]}-${suits[j]}`
         if (suits[j] === 'cua' || suits[j] === 'viu') {
           card.setAttribute('data-color', 'red')
@@ -213,13 +222,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (timer) clearInterval(timer);
       let hms = function (){
         let sec = Math.trunc( seconds % 60 );
-        let min = Math.trunc( (seconds % 3600) / 60 );
-        let hou = Math.trunc( (seconds % 86400) / 3600 );
+        let min = Math.trunc( (seconds % 3600) / 60 )
+        let hou = Math.trunc( (seconds % 86400) / 3600 )
         let time = ( (hou<10)? "0"+hou : ""+hou )
               + ":" + ( (min<10)? "0"+min : ""+min )
-              + ":" + ( (sec<10)? "0"+sec : ""+sec );
+              + ":" + ( (sec<10)? "0"+sec : ""+sec )
         setCounter(document.getElementById("time"), time)
-              seconds++;
+              seconds++
       }
 
       hms(); // Primera visualización 00:00:00
@@ -232,12 +241,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function reboot() {
-    location.reload();
-  }
+    console.log("REBOOT")
 
-  window.onload = function() {
-    document.getElementById('reboot').addEventListener('click', reboot);
-  }
+    //set variable
+    initialDeck = []
 
+    //location.reload()
+    startGame()
+  }
 
 })
