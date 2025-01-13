@@ -26,10 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const timeElement = document.getElementById('time')
   const modalElement = document.getElementById('modal');
   const closeModalElement = document.getElementsByClassName('closeModal')[0];
-<<<<<<< HEAD
-=======
-
->>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
 
 
   // Inicialización de los arreglos para el manejo de los contadores en cada tablero
@@ -55,48 +51,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicio del tiempo
     startTime()
 
-<<<<<<< HEAD
     // Tableros escuchando el evento drop
     listenerDropCard(stockElement, cardsStock)
     listenerDropCard(foundation1Element, cardsFoundation1)
     listenerDropCard(foundation2Element, cardsFoundation2)
     listenerDropCard(foundation3Element, cardsFoundation3)
     listenerDropCard(foundation4Element, cardsFoundation4)
-=======
-    startTime()
-
-    // DROP CARD STROKE
-    stockElement.ondragenter = function(e) { e.preventDefault(); }
-    stockElement.ondragover = function(e) { e.preventDefault(); }
-    stockElement.ondragleave = function(e) { e.preventDefault(); }
-    stockElement.ondrop = dropCard
-
-    // DROP CARD foundation 1
-    foundation1Element.ondragenter = function(e) { e.preventDefault(); }
-    foundation1Element.ondragover = function(e) { e.preventDefault(); }
-    foundation1Element.ondragleave = function(e) { e.preventDefault(); }
-    foundation1Element.ondrop = dropCardFoundation(foundation1Element, cardsFoundation1)
-
-    // DROP CARD foundation 2
-    foundation2Element.ondragenter = function(e) { e.preventDefault(); }
-    foundation2Element.ondragover = function(e) { e.preventDefault(); }
-    foundation2Element.ondragleave = function(e) { e.preventDefault(); }
-    foundation2Element.ondrop = dropCardFoundation(foundation2Element, cardsFoundation2)
-    // DROP CARD foundation 3
-    foundation3Element.ondragenter = function(e) { e.preventDefault(); }
-    foundation3Element.ondragover = function(e) { e.preventDefault(); }
-    foundation3Element.ondragleave = function(e) { e.preventDefault(); }
-    foundation3Element.ondrop = dropCardFoundation(foundation3Element, cardsFoundation3)
-    // DROP CARD foundation 4
-    foundation4Element.ondragenter = function(e) { e.preventDefault(); }
-    foundation4Element.ondragover = function(e) { e.preventDefault(); }
-    foundation4Element.ondragleave = function(e) { e.preventDefault(); }
-    foundation4Element.ondrop = dropCardFoundation(foundation4Element, cardsFoundation4)
->>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
 
     // Escucha el evento click para reiniciar el juego
     document.getElementById('reboot').addEventListener('click', reboot)
-<<<<<<< HEAD
     // Escucha el evento click para cerrar el modal y reiniciar la partida
     closeModalElement.addEventListener('click', closeModal);
     // Cerrar el modal si el usuario hace clic fuera del contenido del modal
@@ -105,18 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
           closeModal();
       }
     }
-=======
-    
-  }
-  startGame()
-
-
-  function moveStockToBoard(){
-      initialDeck = cardsStock
-      initialGameBoard(initialDeck)
-      cardsStock = []
-      setCounter(document.getElementById("counter_stock"), cardsStock.length)
->>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
   }
 
   startGame()
@@ -233,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function dropCardAction(element, cardsArray) {
     return function(event) {
       event.preventDefault();
+
       let cardId = event.dataTransfer.getData("text/plain/id")
       let value = event.dataTransfer.getData("text/plain/value")
       let color = event.dataTransfer.getData("text/plain/color")
@@ -283,25 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (element == 'board') {
       initialDeck.pop()
       setCounter(document.getElementById("counter_board"), initialDeck.length)
-<<<<<<< HEAD
       validateGame(initialDeck.length)
-=======
-      
-      if (
-        (initialDeck.length == 0) 
-        && (document.getElementById('counter_foundation1').textContent == greatestNumber)
-        && (document.getElementById('counter_foundation2').textContent == greatestNumber)
-        && (document.getElementById('counter_foundation3').textContent == greatestNumber)
-        && (document.getElementById('counter_foundation4').textContent == greatestNumber)
-        ){
-        
-          openModal();
-        
-      }else if (initialDeck.length == 0) {
-        moveStockToBoard ()    
-      }
-
->>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
     }else {
       cardsStock.pop()
       setCounter(document.getElementById("counter_stock"), cardsStock.length)
@@ -309,7 +243,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 
-<<<<<<< HEAD
   /**
    * Valida si el juego terminó o si se debe barajar las cartas del stock
    * @param {entero} boardLength
@@ -327,9 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
       moveStockToBoard()
     }
   }
-=======
-  function startTime(){
->>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
 
   /**
    * Mueve las cartas del stock al tablero
@@ -391,20 +321,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   }
 
-<<<<<<< HEAD
   /**
   * Reinicia el juego inicializando los valores
   */
-=======
-  function stopTimeAndMovements() {
-    clearInterval(timer); 
-    setCounter(document.getElementById('timeWinner'), timeElement.textContent)
-    movementsWinner = movements;
-    setCounter(document.getElementById('movementsWinner'), ++movementsWinner)
-  }
-
-
->>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
   function reboot() {
     images = boardElement.querySelectorAll('img');
     images.forEach(img => img.remove());
@@ -442,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setCounter(document.getElementById('counter_foundation4'), 0)
 
     //reinicia contadores de movimientos
-    movements = 0 
+    movements = 0
     setCounter(movementsElement, movements);
 
     //reinicia tiempo
@@ -453,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
     startGame();
   }
 
-    
+
   function openModal() {
     modalElement.style.display = 'block';
     stopTimeAndMovements();
@@ -462,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function closeModal() {
     modalElement.style.display = 'none';
-    reboot();   
+    reboot();
   }
   closeModalElement.addEventListener('click', closeModal);
 
