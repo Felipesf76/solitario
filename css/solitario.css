@@ -6,6 +6,7 @@
 h1 {
   font-size: xx-large;
   color: orange;
+  align-content: center;
 }
 
 .container {
@@ -108,5 +109,46 @@ button {
   border: none;
   border-radius: 5px;
   margin-top: 30px;
+  cursor: pointer;
+}
+
+.modal {
+  display: none; /* oculto */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 4px;
+  width: 80%;
+  max-width: 500px;
+  position: relative;
+  text-align: center;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+.closeModal {
+  color: #aaa;
+  font-size: 35px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.closeModal:hover,
+.closeModal:focus {
+  color: black;
+  text-decoration: none;
   cursor: pointer;
 }

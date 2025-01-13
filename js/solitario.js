@@ -1,17 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   const suits = ['cir', 'cua', 'hex', 'viu']
-  // const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
-  const values = [1]
+  const values = [1 ,2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 
-  // Convert strings to numbers and find the max
+  /**
+   * Obtener el número mayor de los valores de las cartas
+   * @param {Array} values número de cartas
+   * @returns El número mayor en el arreglo de números
+   */
   function getGreatestNumber(values) {
     return Math.max(...values.map(Number));
   }
+
+
+  // Obtencion de los elementos del html, a trevés del ID
   const greatestNumber = getGreatestNumber(values)
-
-
   const boardElement = document.getElementById('board')
   const stockElement = document.getElementById('stock')
   const foundation1Element = document.getElementById('foundation1')
@@ -19,67 +23,62 @@ document.addEventListener('DOMContentLoaded', function() {
   const foundation3Element = document.getElementById('foundation3')
   const foundation4Element = document.getElementById('foundation4')
   const movementsElement = document.getElementById('movements')
+  const timeElement = document.getElementById('time')
+  const modalElement = document.getElementById('modal');
+  const closeModalElement = document.getElementsByClassName('closeModal')[0];
 
+
+  // Inicialización de los arreglos para el manejo de los contadores en cada tablero
+  let movements = 0 // Contador en 0
   let initialDeck = []
-
-  let movements = 0
   let cardsFoundation1 = []
   let cardsFoundation2 = []
   let cardsFoundation3 = []
   let cardsFoundation4 = []
   let cardsStock = []
 
+
+  /**
+   * Genera el inicio del juego, así como el tiempo
+   */
   function startGame() {
-    // Creation of deck structure
+
+    // Creación de la estructura del juego
     initialDeck = createDeck(values, suits)
-
     initialDeck = shuffleDeck(initialDeck)
-
     initialGameBoard(initialDeck)
 
-    //TODO: Move cards from stock to board
+    // Inicio del tiempo
+    startTime()
 
-    starttime()
+    // Tableros escuchando el evento drop
+    listenerDropCard(stockElement, cardsStock)
+    listenerDropCard(foundation1Element, cardsFoundation1)
+    listenerDropCard(foundation2Element, cardsFoundation2)
+    listenerDropCard(foundation3Element, cardsFoundation3)
+    listenerDropCard(foundation4Element, cardsFoundation4)
 
-    // DROP CARD STROKE
-    stockElement.ondragenter = function(e) { e.preventDefault(); }
-    stockElement.ondragover = function(e) { e.preventDefault(); }
-    stockElement.ondragleave = function(e) { e.preventDefault(); }
-    stockElement.ondrop = dropCard
-
-    // DROP CARD foundation 1
-    foundation1Element.ondragenter = function(e) { e.preventDefault(); }
-    foundation1Element.ondragover = function(e) { e.preventDefault(); }
-    foundation1Element.ondragleave = function(e) { e.preventDefault(); }
-    foundation1Element.ondrop = dropCardFoundation(foundation1Element, cardsFoundation1)
-
-    // DROP CARD foundation 2
-    foundation2Element.ondragenter = function(e) { e.preventDefault(); }
-    foundation2Element.ondragover = function(e) { e.preventDefault(); }
-    foundation2Element.ondragleave = function(e) { e.preventDefault(); }
-    foundation2Element.ondrop = dropCardFoundation(foundation2Element, cardsFoundation2)
-    // DROP CARD foundation 3
-    foundation3Element.ondragenter = function(e) { e.preventDefault(); }
-    foundation3Element.ondragover = function(e) { e.preventDefault(); }
-    foundation3Element.ondragleave = function(e) { e.preventDefault(); }
-    foundation3Element.ondrop = dropCardFoundation(foundation3Element, cardsFoundation3)
-    // DROP CARD foundation 4
-    foundation4Element.ondragenter = function(e) { e.preventDefault(); }
-    foundation4Element.ondragover = function(e) { e.preventDefault(); }
-    foundation4Element.ondragleave = function(e) { e.preventDefault(); }
-    foundation4Element.ondrop = dropCardFoundation(foundation4Element, cardsFoundation4)
-
+    // Escucha el evento click para reiniciar el juego
     document.getElementById('reboot').addEventListener('click', reboot)
-    
-  }
-  startGame()
-  function moveStockToBoard(){
-      initialDeck = cardsStock
-      initialGameBoard(initialDeck)
-      cardsStock = []
-      setCounter(document.getElementById("counter_stock"), cardsStock.length)
+    // Escucha el evento click para cerrar el modal y reiniciar la partida
+    closeModalElement.addEventListener('click', closeModal);
+    // Cerrar el modal si el usuario hace clic fuera del contenido del modal
+    window.onclick = function(event) {
+      if (event.target === modalElement) {
+          closeModal();
+      }
+    }
   }
 
+  startGame()
+
+
+  /**
+   * Obtiene los valores de las cartas y los palos para generar la baraja completa
+   * @param {Array} values Número de cartas
+   * @param {Array} suits Cantidad de palos de la baraja
+   * @returns Array de la baraja
+   */
   function createDeck(values, suits) {
     for (i = 0; i < values.length; i++) {
       for (j = 0; j < suits.length; j++) {
@@ -100,6 +99,12 @@ document.addEventListener('DOMContentLoaded', function() {
     return initialDeck
   }
 
+
+  /**
+   * Obtiene la baraja completa y la ordena aleatoriamente
+   * @param {Array} initialDeck Arreglo de cartas
+   * @returns Array de cartas ordenada aleatoriamente
+   */
   function shuffleDeck(initialDeck) {
     for (i = initialDeck.length - 1; i > 0; i--) {
       let j = Math.floor(Math.random() * (i + 1));
@@ -110,6 +115,11 @@ document.addEventListener('DOMContentLoaded', function() {
     return initialDeck
   }
 
+
+  /**
+   * Genera la estructura de la baraja y las inserta en el tablero
+   * @param {Array} initialDeck Arreglo de cartas ordenadas aleatoriamente
+   */
   function initialGameBoard(initialDeck) {
     let count = 0
     for (i = 0; i < initialDeck.length; i++) {
@@ -123,6 +133,10 @@ document.addEventListener('DOMContentLoaded', function() {
     draggableCard(initialDeck)
   }
 
+  /**
+   * Genera las propiedades de las cartas dejando la última draggable
+   * @param {Array} cardsArray Array de las cartas en la baraja
+   */
   function draggableCard(cardsArray) {
     for (i = 0; i < cardsArray.length; i++) {
       if (i === cardsArray.length - 1) {
@@ -135,47 +149,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  function dropCard(event) {
-    event.preventDefault();
-    let cardId = event.dataTransfer.getData("text/plain/id")
-    let suit = event.dataTransfer.getData("text/plain/suit")
-    let value = event.dataTransfer.getData("text/plain/value")
-    let elementId = event.dataTransfer.getData("text/plain/elementId")
-    let card = document.getElementById(cardId)
-    card.style.top = "30px"
-    card.style.left = "30px"
-    stockElement.appendChild(card)
-    cardsStock.push(card)
-    setCounter(stockElement.firstElementChild ,cardsStock.length)
-    decrementCounter(elementId)
-    draggableCard(initialDeck)
-    setCounter(movementsElement , ++movements)
+
+  /**
+   * Agrega los valores deseados al evento
+   * @param {evento} event Evento de arrastrar de la carta
+   */
+  function in_movement(event) {
+    event.dataTransfer.setData("text/plain/id", event.target.id)
+    event.dataTransfer.setData("text/plain/value", event.target.dataset["value"] )
+    event.dataTransfer.setData("text/plain/color", event.target.dataset["color"] )
+    event.dataTransfer.setData("text/plain/elementId", event.target.parentElement.id )
   }
 
-  function dropCardFoundation(element, cardsArray) {
+  /**
+   * Prepara el elemento para escuchar los eventos referentes al drop
+   * @param {elemento HTML} element elemento al que hace referencia
+   * @param {Array} cardsArray Arreglo de los elementos hijos
+   */
+  function listenerDropCard(element, cardsArray) {
+    element.ondragenter = function(e) { e.preventDefault(); }
+    element.ondragover = function(e) { e.preventDefault(); }
+    element.ondragleave = function(e) { e.preventDefault(); }
+    element.ondrop = dropCardAction(element, cardsArray)
+  }
+
+  /**
+   * 1. Evalua si el elemento HTML foundation o stock puede recibir la carta
+   * 2. Se agrega la carta (elemento HTML) en el tablero correspondiente
+   * 3. Modifica los contadores de los tableros de acuerdo a la cantidad de cartas
+   * @param {elemento HTML} element elemento al que hace referencia
+   * @param {Array} cardsArray Arreglo de los elementos hijos
+   * @returns
+   */
+  function dropCardAction(element, cardsArray) {
     return function(event) {
       event.preventDefault();
-
       let cardId = event.dataTransfer.getData("text/plain/id")
-      let suit = event.dataTransfer.getData("text/plain/suit")
       let value = event.dataTransfer.getData("text/plain/value")
       let color = event.dataTransfer.getData("text/plain/color")
       let elementId = event.dataTransfer.getData("text/plain/elementId")
       let card = document.getElementById(cardId)
-
-      if (cardsArray.length == 0 && value == greatestNumber ) {
+      if (cardsArray.length == 0 && value == greatestNumber || element.id == "stock") {
         card.style.top = "30px"
         card.style.left = "30px"
         element.appendChild(card)
         cardsArray.push(card)
-        card.draggable = false
+        element.id == "stock" ? card.draggable = true : card.draggable = false
         setCounter(element.firstElementChild, cardsArray.length)
         decrementCounter(elementId)
         draggableCard(initialDeck)
         setCounter(movementsElement , ++movements)
       }else if(cardsArray.length > 0 && value == greatestNumber - cardsArray.length ){
         let colorCardsArray = cardsArray[cardsArray.length-1].getAttribute('data-color')
-
         if (colorCardsArray != color){
           card.style.top = "30px"
           card.style.left = "30px"
@@ -192,50 +217,90 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 
-  function in_movement(event) {
-    event.dataTransfer.setData( "text/plain/suit", event.target.dataset["suit"] )
-    event.dataTransfer.setData( "text/plain/id", event.target.id )
-    event.dataTransfer.setData( "text/plain/value", event.target.dataset["value"] )
-    event.dataTransfer.setData( "text/plain/color", event.target.dataset["color"] )
-    event.dataTransfer.setData( "text/plain/elementId", event.target.parentElement.id )
-  }
-
+  /**
+   * Asigna el valor count a la propiedad del elemento
+   * @param {elemento HTML} element
+   * @param {entero} count
+   */
   function setCounter(element, count) {
     element.textContent = count
   }
 
-      
+  /**
+   * Verifica el elemento HTML si hace parte del tablero o stock para eliminarlo
+   * @param {elemento HTML} element
+   */
   function decrementCounter(element) {
-    
     if (element == 'board') {
-      
       initialDeck.pop()
       setCounter(document.getElementById("counter_board"), initialDeck.length)
-      
-      if (
-        (initialDeck.length == 0) 
-        && (document.getElementById('counter_foundation1').textContent == greatestNumber)
-        && (document.getElementById('counter_foundation2').textContent == greatestNumber)
-        && (document.getElementById('counter_foundation3').textContent == greatestNumber)
-        && (document.getElementById('counter_foundation4').textContent == greatestNumber)
-        ){
-        
-        console.log("HAZ GANADO")
-        
-      }else if (initialDeck.length == 0) {
-        moveStockToBoard ()    
-      }
-
+      validateGame(initialDeck.length)
     }else {
       cardsStock.pop()
       setCounter(document.getElementById("counter_stock"), cardsStock.length)
     }
-
   }
 
 
-  function starttime(){
+  /**
+   * Valida si el juego terminó o si se debe barajar las cartas del stock
+   * @param {entero} boardLength
+   */
+  function validateGame(boardLength) {
+    if (
+      (initialDeck.length == 0)
+      && (document.getElementById('counter_foundation1').textContent == greatestNumber)
+      && (document.getElementById('counter_foundation2').textContent == greatestNumber)
+      && (document.getElementById('counter_foundation3').textContent == greatestNumber)
+      && (document.getElementById('counter_foundation4').textContent == greatestNumber)
+      ){
+      openModal();
+    }else if (initialDeck.length == 0) {
+      moveStockToBoard()
+    }
+  }
 
+  /**
+   * Mueve las cartas del stock al tablero
+   */
+  function moveStockToBoard(){
+    initialDeck = initialDeck.concat(cardsStock)
+    cardsStock.splice(0)
+    setCounter(document.getElementById("counter_stock"), cardsStock.length)
+    initialGameBoard(initialDeck)
+  }
+
+  /**
+   * Abre el modal para mostrar el resultado del juego
+   */
+  function openModal() {
+    modalElement.style.display = 'block';
+    stopTimeAndMovements();
+  }
+
+  /**
+   * Muestra los resultados de la partida
+   */
+  function stopTimeAndMovements() {
+    clearInterval(timer);
+    setCounter(document.getElementById('timeWinner'), timeElement.textContent)
+    movementsWinner = movements;
+    setCounter(document.getElementById('movementsWinner'), ++movementsWinner)
+  }
+
+  /**
+   * Cierra el modal
+   */
+  function closeModal() {
+    modalElement.style.display = 'none';
+    reboot();
+  }
+
+
+  /**
+   * Inicia el contador de tiempo
+   */
+  function startTime(){
     seconds = 0;
     timer = '';
     if (timer) clearInterval(timer);
@@ -255,8 +320,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   }
 
+  /**
+  * Reinicia el juego inicializando los valores
+  */
   function reboot() {
-    
     images = boardElement.querySelectorAll('img');
     images.forEach(img => img.remove());
 
@@ -282,15 +349,16 @@ document.addEventListener('DOMContentLoaded', function() {
     cardsFoundation3 = [];
     cardsFoundation4 = [];
     cardsStock = [];
+    movements = 0
 
-    // Reinicia los contadores de cartas,  
+    // Reinicia los contadores de cartas,
     setCounter(document.getElementById('counter_board'), greatestNumber)
     setCounter(document.getElementById('counter_stock'), 0)
     setCounter(document.getElementById('counter_foundation1'), 0)
     setCounter(document.getElementById('counter_foundation2'), 0)
     setCounter(document.getElementById('counter_foundation3'), 0)
     setCounter(document.getElementById('counter_foundation4'), 0)
-    
+
     //reinicia contadores de movimientos
     setCounter(movementsElement, 0);
 
