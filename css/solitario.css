@@ -115,13 +115,21 @@ button {
 .modal {
   display: none; /* oculto */
   position: fixed;
+<<<<<<< HEAD
   z-index: 1;
+=======
+  z-index: 1; 
+>>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
 }
 
 .modal-content {
@@ -129,7 +137,11 @@ button {
   margin: 15% auto;
   padding: 20px;
   border-radius: 4px;
+<<<<<<< HEAD
   width: 80%;
+=======
+  width: 80%; 
+>>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
   max-width: 500px;
   position: relative;
   text-align: center;
@@ -140,8 +152,13 @@ button {
   color: #aaa;
   font-size: 35px;
   font-weight: bold;
+<<<<<<< HEAD
   position: absolute;
   top: 10px;
+=======
+  position: absolute; 
+  top: 10px; 
+>>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
   right: 10px;
   cursor: pointer;
 }
@@ -152,3 +169,7 @@ button {
   text-decoration: none;
   cursor: pointer;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> b6fe56be78e2a0171d21dfc988bba783cdd159d3
