@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const foundation3Element = document.getElementById('foundation3')
   const foundation4Element = document.getElementById('foundation4')
   const movementsElement = document.getElementById('movements')
+  const timeElement = document.getElementById('time')
+  const modalElement = document.getElementById('modal');
+  const closeModalElement = document.getElementsByClassName('closeModal')[0];
+
 
   let initialDeck = []
 
@@ -39,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //TODO: Move cards from stock to board
 
-    starttime()
+    startTime()
 
     // DROP CARD STROKE
     stockElement.ondragenter = function(e) { e.preventDefault(); }
@@ -73,6 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
   }
   startGame()
+
+
   function moveStockToBoard(){
       initialDeck = cardsStock
       initialGameBoard(initialDeck)
@@ -220,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
         && (document.getElementById('counter_foundation4').textContent == greatestNumber)
         ){
         
-        console.log("HAZ GANADO")
+          openModal();
         
       }else if (initialDeck.length == 0) {
         moveStockToBoard ()    
@@ -234,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 
-  function starttime(){
+  function startTime(){
 
     seconds = 0;
     timer = '';
@@ -254,6 +260,14 @@ document.addEventListener('DOMContentLoaded', function() {
     timer = setInterval(hms, 1000);
 
   }
+
+  function stopTimeAndMovements() {
+    clearInterval(timer); 
+    setCounter(document.getElementById('timeWinner'), timeElement.textContent)
+    movementsWinner = movements;
+    setCounter(document.getElementById('movementsWinner'), ++movementsWinner)
+  }
+
 
   function reboot() {
     
@@ -292,7 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setCounter(document.getElementById('counter_foundation4'), 0)
     
     //reinicia contadores de movimientos
-    setCounter(movementsElement, 0);
+    movements = 0 
+    setCounter(movementsElement, movements);
 
     //reinicia tiempo
     clearInterval(timer);
@@ -300,6 +315,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Reinicia el juego
     startGame();
+  }
+
+    
+  function openModal() {
+    modalElement.style.display = 'block';
+    stopTimeAndMovements();
+  }
+
+
+  function closeModal() {
+    modalElement.style.display = 'none';
+    reboot();   
+  }
+  closeModalElement.addEventListener('click', closeModal);
+
+
+  // Cerrar el modal si el usuario hace clic fuera del contenido del modal
+  window.onclick = function(event) {
+      if (event.target === modalElement) {
+          closeModal();
+      }
   }
 
 })
