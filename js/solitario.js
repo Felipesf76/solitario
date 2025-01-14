@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   const suits = ['cir', 'cua', 'hex', 'viu']
-  const values = [1 ,2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  const values = [1 ,2]
 
 
   /**
@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
    * @param {Array} cardsArray Arreglo de los elementos hijos
    */
   function listenerDropCard(element, cardsArray) {
+    let elemento = document.lastChildElement;
     element.ondragenter = function(e) { e.preventDefault(); }
     element.ondragover = function(e) { e.preventDefault(); }
     element.ondragleave = function(e) { e.preventDefault(); }
@@ -248,15 +249,9 @@ document.addEventListener('DOMContentLoaded', function() {
    * @param {entero} boardLength
    */
   function validateGame(boardLength) {
-    if (
-      (initialDeck.length == 0)
-      && (document.getElementById('counter_foundation1').textContent == greatestNumber)
-      && (document.getElementById('counter_foundation2').textContent == greatestNumber)
-      && (document.getElementById('counter_foundation3').textContent == greatestNumber)
-      && (document.getElementById('counter_foundation4').textContent == greatestNumber)
-      ){
+     if (boardLength === 0 && cardsStock.length === 0) {
       openModal();
-    }else if (initialDeck.length == 0) {
+    }else if (boardLength === 0) {
       moveStockToBoard()
     }
   }
@@ -327,22 +322,16 @@ document.addEventListener('DOMContentLoaded', function() {
   function reboot() {
     images = boardElement.querySelectorAll('img');
     images.forEach(img => img.remove());
-
     images = stockElement.querySelectorAll('img')
     images.forEach(img => img.remove());
-
     images = foundation1Element.querySelectorAll('img')
     images.forEach(img => img.remove());
-
     images = foundation2Element.querySelectorAll('img')
     images.forEach(img => img.remove());
-
     images = foundation3Element.querySelectorAll('img')
     images.forEach(img => img.remove());
-
     images = foundation4Element.querySelectorAll('img')
     images.forEach(img => img.remove());
-
     // Reinicia las variables del juego
     initialDeck = [];
     cardsFoundation1 = [];
@@ -351,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
     cardsFoundation4 = [];
     cardsStock = [];
     movements = 0
-
     // Reinicia los contadores de cartas,
     setCounter(document.getElementById('counter_board'), greatestNumber)
     setCounter(document.getElementById('counter_stock'), 0)
@@ -359,38 +347,31 @@ document.addEventListener('DOMContentLoaded', function() {
     setCounter(document.getElementById('counter_foundation2'), 0)
     setCounter(document.getElementById('counter_foundation3'), 0)
     setCounter(document.getElementById('counter_foundation4'), 0)
-
     //reinicia contadores de movimientos
     movements = 0
     setCounter(movementsElement, movements);
-
     //reinicia tiempo
     clearInterval(timer);
     setCounter(document.getElementById("time"), "00:00:00");
-
     // Reinicia el juego
     startGame();
   }
 
-
+  /**
+   * Abre el modal para mostrar el resultado del juego
+   */
   function openModal() {
     modalElement.style.display = 'block';
     stopTimeAndMovements();
   }
 
-
+  /**
+   * Cierra el modal
+   */
   function closeModal() {
     modalElement.style.display = 'none';
     reboot();
   }
-  closeModalElement.addEventListener('click', closeModal);
 
-
-  // Cerrar el modal si el usuario hace clic fuera del contenido del modal
-  window.onclick = function(event) {
-      if (event.target === modalElement) {
-          closeModal();
-      }
-  }
 
 })
